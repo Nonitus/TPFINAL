@@ -218,7 +218,8 @@ int main(int argc, char **argv)
 void Fondo(void) {
 	al_init_font_addon(); // initialize the font addon
 	al_init_ttf_addon();// initialize the ttf (True Type Font) addon
-	ALLEGRO_FONT *font = al_load_ttf_font("Extras/SouthernAire_Personal_Use_Only.ttf", 72, 0);
+	ALLEGRO_FONT *font = al_load_ttf_font("Extras/SouthernAire_Personal_Use_Only.ttf", 90, 0);
+	ALLEGRO_FONT *notas = al_load_ttf_font("Extras/NormalSometimes-Regular.ttf", 20, 0);
 	al_clear_to_color(al_map_rgb(50, 50, 50)); //COLOR DE FONDO DE TODO
 	switch (Estado) {
 	case  0:
@@ -227,7 +228,8 @@ void Fondo(void) {
 		break;
 	case 1:
 		al_draw_text(font, ColorLetra, SCREEN_W / 2, SCREEN_H * 0.1, ALLEGRO_ALIGN_CENTRE, "Ingrese Resistencias");
-		al_draw_text(font, ColorLetra, SCREEN_W * 0.9, SCREEN_H * 0.9, ALLEGRO_ALIGN_CENTRE, "Salir");
+		al_draw_text(font, ColorLetra, SCREEN_W * 0.9, SCREEN_H * 0.85, ALLEGRO_ALIGN_CENTRE, "Salir");
+		al_draw_text(notas, al_map_rgb(250,250,250), SCREEN_W * 0.03, SCREEN_H * 0.95, ALLEGRO_ALIGN_LEFT, "Presione R para resistencias y L para conectores");
 		break;
 	}
 	al_flip_display();
