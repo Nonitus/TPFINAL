@@ -9,6 +9,7 @@
 #define SCREEN_W  1920
 #define SCREEN_H  1000
 #define ColorLetra al_map_rgb(50, 187, 164)
+#define ColorNotas al_map_rgb(30, 157, 164)
 #define ColorTitulo al_map_rgb(255, 255, 255)
 #define ColorLinea al_map_rgb(0,0,0)
 #define ButRunIzq  ( SCREEN_W / 2 - 100)
@@ -36,6 +37,7 @@ typedef struct {
 
 void Fondo(void);
 void crearCoord(float coordInicX, float coordInicY);
+void dibujoActual(int Tecla);
 
 const float FPS = 60;
 const int BOUNCER_SIZE = 32;
@@ -43,10 +45,11 @@ int Estado = 0;
 int EstadoTecla;
 int EstadoLinea;
 bool FirstTime = 0;
+ALLEGRO_DISPLAY *display = NULL;
 
 int main(int argc, char **argv)
 {
-	ALLEGRO_DISPLAY *display = NULL;
+	
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 	ALLEGRO_TIMER *timer = NULL;
 	ALLEGRO_BITMAP *bouncer = NULL;
@@ -209,6 +212,7 @@ int main(int argc, char **argv)
 				EstadoTecla = 2;
 				break;
 			}
+			dibujoActual(EstadoTecla);
 		}
 
 
@@ -230,8 +234,8 @@ int main(int argc, char **argv)
 }
 
 void Fondo(void) {
-	al_init_font_addon(); // initialize the font addon
-	al_init_ttf_addon();// initialize the ttf (True Type Font) addon
+	al_init_font_addon();
+	al_init_ttf_addon();
 	ALLEGRO_FONT *font = al_load_ttf_font("Extras/SouthernAire_Personal_Use_Only.ttf", 90, 0);
 	ALLEGRO_FONT *notas = al_load_ttf_font("Extras/NormalSometimes-Regular.ttf", 20, 0);
 	al_clear_to_color(al_map_rgb(50, 50, 50)); //COLOR DE FONDO DE TODO
@@ -252,11 +256,41 @@ void Fondo(void) {
 	return;
 }
 
+void dibujoActual(int Tecla) {
+
+
+
+	al_init_font_addon();
+	al_init_ttf_addon();
+	ALLEGRO_FONT *notas = al_load_ttf_font("Extras/NormalSometimes-Regular.ttf", 20, 0);
+
+
+	ALLEGRO_BITMAP *bloqueador = NULL;
+	bloqueador = al_create_bitmap(500, 22);
+	al_set_target_bitmap(bloqueador);
+	al_clear_to_color(al_map_rgb(50,50, 50));
+	al_set_target_bitmap(al_get_backbuffer(display));
+
+
+	al_draw_bitmap(bloqueador, SCREEN_W * 0.03, SCREEN_H * 0.90,0);
+	al_flip_display();
+
+	switch (Tecla) {
+	case  1:
+		al_draw_text(notas, ColorNotas, SCREEN_W * 0.03, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "Estado Actual Resistencia");
+		break;
+	case 2:
+		al_draw_text(notas, ColorNotas, SCREEN_W * 0.03, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "Estado Actual Conductor");
+		break;
+	}
+	al_flip_display();
+}
+
 void crearCoord(float coordInicX, float coordInicY) {
 	static int ResisNum;
 	static coordenadas ResisCoord[10];
 	ResisCoord[ResisNum].coordX1 = coordInicX;
-	ResisCoord[ResisNum].coordX2 = coordInicX+75;
+	ResisCoord[ResisNum].coordX2 = coordInicX + 75;
 	ResisCoord[ResisNum].coordY = coordInicY;
 	ResisNum++;
 }
