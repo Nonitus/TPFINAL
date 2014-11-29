@@ -12,16 +12,16 @@
 #define ColorLinea al_map_rgb(0,0,0)
 #define ButRunIzq  ( SCREEN_W / 2 - 50)
 #define ButRunDer  ( SCREEN_W / 2 + 50)
-#define ButRunTop  (SCREEN_H / 2 - 100 - 36)
-#define ButRunBot  (SCREEN_H / 2 - 100 + 36)
+#define ButRunTop  (SCREEN_H / 2 - 100 - 40)
+#define ButRunBot  (SCREEN_H / 2 - 100 + 60)
 #define ButSalirIzq  ( SCREEN_W / 2 - 50)
 #define ButSalirDer ( SCREEN_W / 2 + 50)
-#define ButSalirTop  (SCREEN_H / 2 + 100 - 36)
-#define ButSalirBot  (SCREEN_H / 2 + 100 + 36)
+#define ButSalirTop  (SCREEN_H / 2 + 100 - 40)
+#define ButSalirBot  (SCREEN_H / 2 + 100 + 40)
 #define ButSalir2Izq  (SCREEN_W * 0.9 - 50)
 #define ButSalir2Der (SCREEN_W * 0.9 + 50)
-#define ButSalir2Top  (SCREEN_H * 0.9 + 36)
-#define ButSalir2Bot  (SCREEN_H * 0.9 - 36)
+#define ButSalir2Top  (SCREEN_H * 0.9 + 50)
+#define ButSalir2Bot  (SCREEN_H * 0.9 - 50)
 
 
 void Fondo(void);
