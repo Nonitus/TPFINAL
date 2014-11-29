@@ -35,7 +35,7 @@ typedef struct {
 	float coordY;
 } coordenadas;
 
-void Fondo(void);
+void Fondo(ALLEGRO_FONT *font, ALLEGRO_FONT *notas);
 void crearCoord(float coordInicX, float coordInicY);
 void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display);
 
@@ -118,6 +118,12 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
+	al_init_font_addon();
+	al_init_ttf_addon();
+	ALLEGRO_FONT *font = al_load_ttf_font("Extras/SouthernAire_Personal_Use_Only.ttf", 90, 0);
+	ALLEGRO_FONT *notas = al_load_ttf_font("Extras/NormalSometimes-Regular.ttf", 20, 0);
+
+
 	//Registro Proveedores de ventos
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
@@ -133,7 +139,7 @@ int main(int argc, char **argv)
 	al_start_timer(timer);
 	//al_hide_mouse_cursor(display);
 
-	Fondo();
+	Fondo(font, notas);
 
 
 	//Aca arrancan los eventos
@@ -159,26 +165,26 @@ int main(int argc, char **argv)
 			if (Estado == 0)
 				if ((bouncer_x < ButSalirDer && bouncer_x > ButSalirIzq) && (bouncer_y < ButSalirBot && bouncer_y > ButSalirTop)) {
 					al_draw_bitmap(bouncer, ButSalirIzq, ButSalirTop, 0);
-					Fondo();
+					Fondo(font,notas);
 					al_hide_mouse_cursor(display);
 					al_draw_bitmap(image, bouncer_x, bouncer_y, 0);
 					al_flip_display();
 				}
 				else if ((bouncer_x < ButRunDer && bouncer_x > ButRunIzq) && (bouncer_y < ButRunBot && bouncer_y > ButRunTop)) {
-									al_draw_bitmap(bouncer, ButRunIzq, ButRunTop, 0);
-									Fondo();
-									al_hide_mouse_cursor(display);
-									al_draw_bitmap(image, bouncer_x, bouncer_y, 0);
-									al_flip_display();
-								}
+					al_draw_bitmap(bouncer, ButRunIzq, ButRunTop, 0);
+					Fondo(font, notas);
+					al_hide_mouse_cursor(display);
+					al_draw_bitmap(image, bouncer_x, bouncer_y, 0);
+					al_flip_display();
+					}
 
 				else {
-					Fondo();
+					Fondo(font, notas);
 					al_show_mouse_cursor(display);
 				}
 
-				if (Estado == 1)
-					al_show_mouse_cursor(display);
+			if (Estado == 1)
+				al_show_mouse_cursor(display);
 
 
 
@@ -192,7 +198,7 @@ int main(int argc, char **argv)
 				if (bouncer_x< ButRunDer && bouncer_x> ButRunIzq)
 					if (bouncer_y < ButRunBot && bouncer_y > ButRunTop) {
 						Estado = 1;
-						Fondo();
+						Fondo(font, notas);
 					}
 			}
 
@@ -261,11 +267,8 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-void Fondo(void) {
-	al_init_font_addon();
-	al_init_ttf_addon();
-	ALLEGRO_FONT *font = al_load_ttf_font("Extras/SouthernAire_Personal_Use_Only.ttf", 90, 0);
-	ALLEGRO_FONT *notas = al_load_ttf_font("Extras/NormalSometimes-Regular.ttf", 20, 0);
+void Fondo(ALLEGRO_FONT *font, ALLEGRO_FONT *notas) {
+
 	al_clear_to_color(al_map_rgb(50, 50, 50)); //COLOR DE FONDO DE TODO
 	switch (Estado) {
 	case  0:
