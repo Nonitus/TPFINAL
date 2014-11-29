@@ -1,0 +1,15 @@
+﻿Build started 29/11/2014 12:30:22.
+     1>Project "D:\Codigo-VS\PruebaAllegro\PruebaAllegro\PruebaAllegro.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         D:\Programas\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /Ic:\allegro\include /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
+         main.cpp
+       Link:
+         D:\Programas\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Codigo-VS\PruebaAllegro\Release\PruebaAllegro.exe" /NOLOGO /LIBPATH:c:\allegro\lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib "allegro-5.0.10-monolith-md-debug.lib" "allegro-5.0.10-monolith-md.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"D:\Codigo-VS\PruebaAllegro\Release\PruebaAllegro.pdb" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Codigo-VS\PruebaAllegro\Release\PruebaAllegro.lib" /MACHINE:X86 /SAFESEH Release\main.obj
+         Generating code
+         Finished generating code
+         PruebaAllegro.vcxproj -> D:\Codigo-VS\PruebaAllegro\Release\PruebaAllegro.exe
+     1>Done Building Project "D:\Codigo-VS\PruebaAllegro\PruebaAllegro\PruebaAllegro.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.86
