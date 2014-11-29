@@ -6,6 +6,7 @@
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_primitives.h>
 
+
 #define SCREEN_W  1920
 #define SCREEN_H  1000
 #define ColorLetra al_map_rgb(50, 187, 164)
