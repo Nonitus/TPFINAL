@@ -9,6 +9,7 @@
 #define SCREEN_W  1920
 #define SCREEN_H  1000
 #define ColorLetra al_map_rgb(50, 187, 164)
+#define ColorTitulo al_map_rgb(255, 255, 255)
 #define ColorLinea al_map_rgb(0,0,0)
 #define ButRunIzq  ( SCREEN_W / 2 - 50)
 #define ButRunDer  ( SCREEN_W / 2 + 50)
@@ -223,13 +224,14 @@ void Fondo(void) {
 	al_clear_to_color(al_map_rgb(50, 50, 50)); //COLOR DE FONDO DE TODO
 	switch (Estado) {
 	case  0:
+		al_draw_text(font, ColorTitulo, SCREEN_W / 2, SCREEN_H / 2 - 300, ALLEGRO_ALIGN_CENTRE, "TP     FINAL      PROGRAMACION");
 		al_draw_text(font, ColorLetra, SCREEN_W / 2, SCREEN_H / 2 - 100, ALLEGRO_ALIGN_CENTRE, "Comenzar");
 		al_draw_text(font, ColorLetra, SCREEN_W / 2, SCREEN_H / 2 + 100, ALLEGRO_ALIGN_CENTRE, "Salir");
 		break;
 	case 1:
 		al_draw_text(font, ColorLetra, SCREEN_W / 2, SCREEN_H * 0.1, ALLEGRO_ALIGN_CENTRE, "Ingrese Resistencias");
 		al_draw_text(font, ColorLetra, SCREEN_W * 0.9, SCREEN_H * 0.85, ALLEGRO_ALIGN_CENTRE, "Salir");
-		al_draw_text(notas, al_map_rgb(250,250,250), SCREEN_W * 0.03, SCREEN_H * 0.95, ALLEGRO_ALIGN_LEFT, "Presione R para resistencias y L para conectores");
+		al_draw_text(notas,ColorTitulo, SCREEN_W * 0.03, SCREEN_H * 0.95, ALLEGRO_ALIGN_LEFT, "Presione R para resistencias y L para conectores");
 		break;
 	}
 	al_flip_display();
