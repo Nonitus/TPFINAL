@@ -37,7 +37,7 @@ typedef struct {
 
 void Fondo(void);
 void crearCoord(float coordInicX, float coordInicY);
-void dibujoActual(int Tecla);
+void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display);
 
 const float FPS = 60;
 const int BOUNCER_SIZE = 32;
@@ -45,11 +45,11 @@ int Estado = 0;
 int EstadoTecla;
 int EstadoLinea;
 bool FirstTime = 0;
-ALLEGRO_DISPLAY *display = NULL;
+
 
 int main(int argc, char **argv)
 {
-	
+	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 	ALLEGRO_TIMER *timer = NULL;
 	ALLEGRO_BITMAP *bouncer = NULL;
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
-	bouncer = al_create_bitmap(BOUNCER_SIZE, BOUNCER_SIZE);
+	bouncer = al_create_bitmap(5000, 200);
 	if (!bouncer) {
 		fprintf(stderr, "failed to create bouncer bitmap!\n");
 		al_destroy_display(display);
@@ -99,7 +99,7 @@ int main(int argc, char **argv)
 	}
 
 	al_set_target_bitmap(bouncer);
-	al_clear_to_color(al_map_rgb(150, 150, 150));
+	al_clear_to_color(al_map_rgb(50, 50,50));
 	al_set_target_bitmap(al_get_backbuffer(display));
 	event_queue = al_create_event_queue();
 	image = al_load_bitmap("Extras/Cursor.png");
@@ -154,6 +154,34 @@ int main(int argc, char **argv)
 
 			bouncer_x = ev.mouse.x;
 			bouncer_y = ev.mouse.y;
+
+			//Cambio de mouse
+			if (Estado == 0)
+				if ((bouncer_x < ButSalirDer && bouncer_x > ButSalirIzq) && (bouncer_y < ButSalirBot && bouncer_y > ButSalirTop)) {
+					al_draw_bitmap(bouncer, ButSalirIzq, ButSalirTop, 0);
+					Fondo();
+					al_hide_mouse_cursor(display);
+					al_draw_bitmap(image, bouncer_x, bouncer_y, 0);
+					al_flip_display();
+				}
+				else if ((bouncer_x < ButRunDer && bouncer_x > ButRunIzq) && (bouncer_y < ButRunBot && bouncer_y > ButRunTop)) {
+									al_draw_bitmap(bouncer, ButRunIzq, ButRunTop, 0);
+									Fondo();
+									al_hide_mouse_cursor(display);
+									al_draw_bitmap(image, bouncer_x, bouncer_y, 0);
+									al_flip_display();
+								}
+
+				else {
+					Fondo();
+					al_show_mouse_cursor(display);
+				}
+
+				if (Estado == 1)
+					al_show_mouse_cursor(display);
+
+
+
 		}
 		else if (ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
 			if (Estado == 0) {
@@ -212,7 +240,7 @@ int main(int argc, char **argv)
 				EstadoTecla = 2;
 				break;
 			}
-			dibujoActual(EstadoTecla);
+			dibujoActual(EstadoTecla,display);
 		}
 
 
@@ -256,7 +284,7 @@ void Fondo(void) {
 	return;
 }
 
-void dibujoActual(int Tecla) {
+void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display) {
 
 
 
