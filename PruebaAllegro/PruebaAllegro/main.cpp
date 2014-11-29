@@ -6,27 +6,36 @@
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_primitives.h>
 
-
 #define SCREEN_W  1920
 #define SCREEN_H  1000
 #define ColorLetra al_map_rgb(50, 187, 164)
 #define ColorTitulo al_map_rgb(255, 255, 255)
 #define ColorLinea al_map_rgb(0,0,0)
-#define ButRunIzq  ( SCREEN_W / 2 - 50)
-#define ButRunDer  ( SCREEN_W / 2 + 50)
+#define ButRunIzq  ( SCREEN_W / 2 - 100)
+#define ButRunDer  ( SCREEN_W / 2 + 100)
 #define ButRunTop  (SCREEN_H / 2 - 100 - 40)
 #define ButRunBot  (SCREEN_H / 2 - 100 + 60)
 #define ButSalirIzq  ( SCREEN_W / 2 - 50)
 #define ButSalirDer ( SCREEN_W / 2 + 50)
-#define ButSalirTop  (SCREEN_H / 2 + 100 - 40)
-#define ButSalirBot  (SCREEN_H / 2 + 100 + 40)
-#define ButSalir2Izq  (SCREEN_W * 0.9 - 50)
-#define ButSalir2Der (SCREEN_W * 0.9 + 50)
-#define ButSalir2Top  (SCREEN_H * 0.9 + 50)
-#define ButSalir2Bot  (SCREEN_H * 0.9 - 50)
+#define ButSalirTop  (SCREEN_H / 2 + 140 - 40)
+#define ButSalirBot  (SCREEN_H / 2 + 140 + 40)
+#define ButSalir2Izq  (SCREEN_W * 0.9 - 80)
+#define ButSalir2Der (SCREEN_W * 0.9 + 80)
+#define ButSalir2Top  (SCREEN_H * 0.9 + 80)
+#define ButSalir2Bot  (SCREEN_H * 0.9 - 80)
+#define ButCalcIzq  (SCREEN_W * 0.9 - 80)
+#define ButCalcDer (SCREEN_W * 0.9 + 80)
+#define ButCalcTop  (SCREEN_H * 0.75 + 80)
+#define ButCalcBot  (SCREEN_H * 0.75 - 80)
 
+typedef struct {
+	float coordX1;
+	float coordX2;
+	float coordY;
+} coordenadas;
 
 void Fondo(void);
+void crearCoord(float coordInicX, float coordInicY);
 
 const float FPS = 60;
 const int BOUNCER_SIZE = 32;
@@ -125,6 +134,7 @@ int main(int argc, char **argv)
 
 
 	//Aca arrancan los eventos
+
 	while (1)
 	{
 		ALLEGRO_EVENT ev;
@@ -163,8 +173,10 @@ int main(int argc, char **argv)
 				if (FirstTime == 0)
 					FirstTime = 1;
 
-				else if (EstadoTecla == 1)
+				else if (EstadoTecla == 1) {
 					al_draw_bitmap(Resis, bouncer_x, bouncer_y - 10, 0);
+					crearCoord(bouncer_x,bouncer_y);
+				}
 
 				else if (EstadoTecla == 2) {
 
@@ -177,7 +189,7 @@ int main(int argc, char **argv)
 						x2 = bouncer_x;
 						y2 = bouncer_y;
 						EstadoLinea = 0;
-						al_draw_line(x1, y1, x2, y2, ColorLinea, 2);
+						al_draw_line(x1, y1, x2, y2, ColorLinea, 3);
 
 					}
 
@@ -231,10 +243,20 @@ void Fondo(void) {
 		break;
 	case 1:
 		al_draw_text(font, ColorLetra, SCREEN_W / 2, SCREEN_H * 0.1, ALLEGRO_ALIGN_CENTRE, "Ingrese Resistencias");
+		al_draw_text(font, ColorTitulo, SCREEN_W * 0.9, SCREEN_H * 0.75, ALLEGRO_ALIGN_CENTRE, "Calcular");
 		al_draw_text(font, ColorLetra, SCREEN_W * 0.9, SCREEN_H * 0.85, ALLEGRO_ALIGN_CENTRE, "Salir");
 		al_draw_text(notas,ColorTitulo, SCREEN_W * 0.03, SCREEN_H * 0.95, ALLEGRO_ALIGN_LEFT, "Presione R para resistencias y L para conectores");
 		break;
 	}
 	al_flip_display();
 	return;
+}
+
+void crearCoord(float coordInicX, float coordInicY) {
+	static int ResisNum;
+	static coordenadas ResisCoord[10];
+	ResisCoord[ResisNum].coordX1 = coordInicX;
+	ResisCoord[ResisNum].coordX2 = coordInicX+75;
+	ResisCoord[ResisNum].coordY = coordInicY;
+	ResisNum++;
 }
