@@ -14,10 +14,10 @@
 #define ColorLinea al_map_rgb(0,0,0)
 #define ButRunIzq  ( SCREEN_W / 2 - 100)
 #define ButRunDer  ( SCREEN_W / 2 + 100)
-#define ButRunTop  (SCREEN_H / 2 - 100 - 40)
-#define ButRunBot  (SCREEN_H / 2 - 100 + 60)
-#define ButSalirIzq  ( SCREEN_W / 2 - 50)
-#define ButSalirDer ( SCREEN_W / 2 + 50)
+#define ButRunTop  (SCREEN_H / 2 - 100 - 10)
+#define ButRunBot  (SCREEN_H / 2 - 100 + 90)
+#define ButSalirIzq  ( SCREEN_W / 2 - 70)
+#define ButSalirDer ( SCREEN_W / 2 + 70)
 #define ButSalirTop  (SCREEN_H / 2 + 140 - 40)
 #define ButSalirBot  (SCREEN_H / 2 + 140 + 40)
 #define ButSalir2Izq  (SCREEN_W * 0.9 - 80)
@@ -33,11 +33,12 @@ typedef struct {
 	float coordX1;
 	float coordX2;
 	float coordY;
-} coordenadas;
+	int Valor;
+} resistor;
 
 void Fondo(ALLEGRO_FONT *font, ALLEGRO_FONT *notas);
-void crearCoord(float coordInicX, float coordInicY);
-void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display);
+void crearCoord(float coordInicX, float coordInicY,int ValorResis);
+void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display,int ValorResis);
 
 const float FPS = 60;
 const int BOUNCER_SIZE = 32;
@@ -58,6 +59,7 @@ int main(int argc, char **argv)
 	float bouncer_x = SCREEN_W / 2.0 - BOUNCER_SIZE / 2.0;
 	float bouncer_y = SCREEN_H / 2.0 - BOUNCER_SIZE / 2.0;
 	bool redraw = true;
+	int ValorResis=1;
 	float x1, x2, y1, y2;
 	//Todos las partes a usar
 
@@ -212,7 +214,7 @@ int main(int argc, char **argv)
 
 				else if (EstadoTecla == 1) {
 					al_draw_bitmap(Resis, bouncer_x, bouncer_y - 10, 0);
-					crearCoord(bouncer_x,bouncer_y);
+					crearCoord(bouncer_x,bouncer_y,ValorResis);
 				}
 
 				else if (EstadoTecla == 2) {
@@ -245,8 +247,35 @@ int main(int argc, char **argv)
 			case ALLEGRO_KEY_L:
 				EstadoTecla = 2;
 				break;
+			case ALLEGRO_KEY_1:
+				ValorResis = 1;
+				break;
+			case ALLEGRO_KEY_2:
+				ValorResis = 2;
+				break;
+			case ALLEGRO_KEY_3:
+				ValorResis = 3;
+				break;
+			case ALLEGRO_KEY_4:
+				ValorResis = 4;
+				break;
+			case ALLEGRO_KEY_5:
+				ValorResis = 5;
+				break;
+			case ALLEGRO_KEY_6:
+				ValorResis = 6;
+				break;
+			case ALLEGRO_KEY_7:
+				ValorResis = 7;
+				break;
+			case ALLEGRO_KEY_8:
+				ValorResis = 8;
+				break;
+			case ALLEGRO_KEY_9:
+				ValorResis = 9;
+				break;
 			}
-			dibujoActual(EstadoTecla,display);
+			dibujoActual(EstadoTecla,display,ValorResis);
 		}
 
 
@@ -287,7 +316,7 @@ void Fondo(ALLEGRO_FONT *font, ALLEGRO_FONT *notas) {
 	return;
 }
 
-void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display) {
+void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis) {
 
 
 
@@ -297,7 +326,7 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display) {
 
 
 	ALLEGRO_BITMAP *bloqueador = NULL;
-	bloqueador = al_create_bitmap(500, 22);
+	bloqueador = al_create_bitmap(600, 22);
 	al_set_target_bitmap(bloqueador);
 	al_clear_to_color(al_map_rgb(50,50, 50));
 	al_set_target_bitmap(al_get_backbuffer(display));
@@ -306,9 +335,39 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display) {
 	al_draw_bitmap(bloqueador, SCREEN_W * 0.03, SCREEN_H * 0.90,0);
 	al_flip_display();
 
+
 	switch (Tecla) {
 	case  1:
 		al_draw_text(notas, ColorNotas, SCREEN_W * 0.03, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "Estado Actual Resistencia");
+		switch (ValorResis) {
+		case  1:
+			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "UN Ohm");
+			break;
+		case  2:
+			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "DOS Ohm");
+			break;
+		case  3:
+			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "TRES Ohm");
+			break;
+		case  4:
+			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "CUATRO Ohm");
+			break;
+		case  5:
+			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "CINCO Ohm");
+			break;
+		case  6:
+			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "SEIS Ohm");
+			break;
+		case  7:
+			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "SIETE Ohm");
+			break;
+		case  8:
+			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "OCHO Ohm");
+			break;
+		case  9:
+			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "NUEVE Ohm");
+			break;
+		}
 		break;
 	case 2:
 		al_draw_text(notas, ColorNotas, SCREEN_W * 0.03, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "Estado Actual Conductor");
@@ -317,11 +376,12 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display) {
 	al_flip_display();
 }
 
-void crearCoord(float coordInicX, float coordInicY) {
+void crearCoord(float coordInicX, float coordInicY,int ValorResis) {
 	static int ResisNum;
-	static coordenadas ResisCoord[10];
+	static resistor ResisCoord[10];
 	ResisCoord[ResisNum].coordX1 = coordInicX;
 	ResisCoord[ResisNum].coordX2 = coordInicX + 75;
 	ResisCoord[ResisNum].coordY = coordInicY;
+	ResisCoord[ResisNum].Valor = ValorResis;
 	ResisNum++;
 }
