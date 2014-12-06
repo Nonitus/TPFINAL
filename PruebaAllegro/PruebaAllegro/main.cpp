@@ -36,9 +36,17 @@ typedef struct {
 	int Valor;
 } resistor;
 
+typedef struct{
+	float x;
+	float y;
+} coordenadas;
+
 void Fondo(ALLEGRO_FONT *font, ALLEGRO_FONT *notas);
 void crearCoord(float coordInicX, float coordInicY,int ValorResis);
 void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display,int ValorResis);
+coordenadas buscarCoinc(float bouncer_x, float bouncer_y);
+void do_nothing(void);
+
 
 const float FPS = 60;
 const int BOUNCER_SIZE = 32;
@@ -46,6 +54,7 @@ int Estado = 0;
 int EstadoTecla;
 int EstadoLinea;
 bool FirstTime = 0;
+resistor ResisCoord[10];
 
 
 int main(int argc, char **argv)
@@ -60,7 +69,9 @@ int main(int argc, char **argv)
 	float bouncer_y = SCREEN_H / 2.0 - BOUNCER_SIZE / 2.0;
 	bool redraw = true;
 	int ValorResis=1;
-	float x1, x2, y1, y2;
+	coordenadas puntoSelec1;
+	coordenadas puntoSelec2;
+
 	//Todos las partes a usar
 
 	if (!al_init()) {
@@ -220,15 +231,17 @@ int main(int argc, char **argv)
 				else if (EstadoTecla == 2) {
 
 					if (EstadoLinea == 0) {
-						x1 = bouncer_x;
-						y1 = bouncer_y;
+						
+						puntoSelec1 = buscarCoinc(bouncer_x, bouncer_y);
 						EstadoLinea = 1;
 					}
 					else if (EstadoLinea == 1) {
-						x2 = bouncer_x;
-						y2 = bouncer_y;
+						puntoSelec2 = buscarCoinc(bouncer_x, bouncer_y);
 						EstadoLinea = 0;
-						al_draw_line(x1, y1, x2, y2, ColorLinea, 3);
+						if (puntoSelec1.x == 0 || puntoSelec1.y == 0 || puntoSelec2.y == 0 || puntoSelec2.y == 0)
+							do_nothing;
+						else
+							al_draw_line(puntoSelec1.x, puntoSelec1.y, puntoSelec2.x, puntoSelec2.y, ColorLinea, 3);
 
 					}
 
@@ -378,10 +391,31 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis) {
 
 void crearCoord(float coordInicX, float coordInicY,int ValorResis) {
 	static int ResisNum;
-	static resistor ResisCoord[10];
 	ResisCoord[ResisNum].coordX1 = coordInicX;
 	ResisCoord[ResisNum].coordX2 = coordInicX + 75;
 	ResisCoord[ResisNum].coordY = coordInicY;
 	ResisCoord[ResisNum].Valor = ValorResis;
+	printf("Resistencia Numero %d, Coord X1 %f, Coord X2 %f, Coord Y1 %f, Valor Resistivo %d \n", ResisNum, ResisCoord[ResisNum].coordX1,ResisCoord[ResisNum].coordX2,ResisCoord[ResisNum].coordY, ResisCoord[ResisNum].Valor);
 	ResisNum++;
+}
+
+coordenadas buscarCoinc(float bouncer_x, float bouncer_y) {
+	coordenadas Devuelvo;
+	Devuelvo.x = 0;
+	Devuelvo.y = 0;
+	int i;
+	for (i = 0; i <= 10; i++)
+		if (((bouncer_x - ResisCoord[i].coordX1)*(bouncer_x - ResisCoord[i].coordX1) + ((bouncer_y - ResisCoord[i].coordY)*(bouncer_y - ResisCoord[i].coordY))) < 100) {
+			Devuelvo.x = ResisCoord[i].coordX1;
+			Devuelvo.y = ResisCoord[i].coordY;
+		}
+		else if (((bouncer_x - ResisCoord[i].coordX2)*(bouncer_x - ResisCoord[i].coordX2) + ((bouncer_y - ResisCoord[i].coordY)*(bouncer_y - ResisCoord[i].coordY))) < 100) {
+			Devuelvo.x = ResisCoord[i].coordX2;
+			Devuelvo.y = ResisCoord[i].coordY;
+		}
+
+		return Devuelvo;
+}
+void do_nothing(void) {
+	return;
 }
