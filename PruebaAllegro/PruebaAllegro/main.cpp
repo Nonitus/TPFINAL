@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_native_dialog.h>
@@ -56,6 +57,8 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display,int ValorResis);
 coordenadas buscarCoinc(float bouncer_x, float bouncer_y);
 void do_nothing(void);
 bool distResis(float bouncer_x, float bouncer_y);
+int ascii2int(void);
+char* char2int(int numero);
 
 //Variables globales
 const float FPS = 60;
@@ -65,6 +68,7 @@ int EstadoTecla;
 int EstadoLinea;
 bool FirstTime = 0;
 resistor ResisCoord[CantidadRes];
+char NroAscii[10];
 //MATRIZ DE PRUEBA
 int uniones[CantidadRes][CantidadRes];
 
@@ -234,36 +238,11 @@ int main(int argc, char **argv)
 			switch (ev.keyboard.keycode) {
 			case ALLEGRO_KEY_R:
 				EstadoTecla = 1;
+				printf("Ingrese el valor de la resistencia ");
+				ValorResis = ascii2int();
 				break;
 			case ALLEGRO_KEY_L:
 				EstadoTecla = 2;
-				break;
-			case ALLEGRO_KEY_1:
-				ValorResis = 1;
-				break;
-			case ALLEGRO_KEY_2:
-				ValorResis = 2;
-				break;
-			case ALLEGRO_KEY_3:
-				ValorResis = 3;
-				break;
-			case ALLEGRO_KEY_4:
-				ValorResis = 4;
-				break;
-			case ALLEGRO_KEY_5:
-				ValorResis = 5;
-				break;
-			case ALLEGRO_KEY_6:
-				ValorResis = 6;
-				break;
-			case ALLEGRO_KEY_7:
-				ValorResis = 7;
-				break;
-			case ALLEGRO_KEY_8:
-				ValorResis = 8;
-				break;
-			case ALLEGRO_KEY_9:
-				ValorResis = 9;
 				break;
 			}
 			dibujoActual(EstadoTecla,display,ValorResis);
@@ -327,35 +306,7 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis) {
 	switch (Tecla) {
 	case  1:
 		al_draw_text(notas, ColorNotas, SCREEN_W * 0.03, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "Estado Actual Resistencia");
-		switch (ValorResis) {
-		case  1:
-			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "UN Ohm");
-			break;
-		case  2:
-			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "DOS Ohm");
-			break;
-		case  3:
-			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "TRES Ohm");
-			break;
-		case  4:
-			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "CUATRO Ohm");
-			break;
-		case  5:
-			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "CINCO Ohm");
-			break;
-		case  6:
-			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "SEIS Ohm");
-			break;
-		case  7:
-			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "SIETE Ohm");
-			break;
-		case  8:
-			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "OCHO Ohm");
-			break;
-		case  9:
-			al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "NUEVE Ohm");
-			break;
-		}
+		al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, NroAscii);
 		break;
 	case 2:
 		al_draw_text(notas, ColorNotas, SCREEN_W * 0.03, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "Estado Actual Conductor");
@@ -407,4 +358,31 @@ return 1;
 }
 void do_nothing(void) {
 	return;
+}
+int ascii2int(void)
+{
+	int num=0;
+	int c,i=0;
+	while ((c = getchar()) != '\n')
+	{
+		c -= 48;
+		if (c >= 0 && c <= 9) {
+			num = ((num * 10) + c);
+			NroAscii[i] = c+48;
+			i++;
+		}
+		else
+		{
+			printf("NaN\n");
+			break;
+		}
+	}
+	NroAscii[i] = 0;
+return (num);
+}
+char* char2int(int numero)
+{
+	char p2char[20];
+	_itoa_s(numero, p2char, 10);
+	return(p2char);
 }
