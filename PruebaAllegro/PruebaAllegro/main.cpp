@@ -13,6 +13,7 @@
 #define ColorLetra al_map_rgb(50, 187, 164)
 #define ColorNotas al_map_rgb(30, 157, 164)
 #define ColorTitulo al_map_rgb(255, 255, 255)
+#define ColorNros al_map_rgb(0,51,153)
 #define ColorLinea al_map_rgb(0,0,0)
 #define ButRunIzq  (SCREEN_W / 2 - 100)
 #define ButRunDer  (SCREEN_W / 2 + 100)
@@ -202,6 +203,7 @@ int main(int argc, char **argv)
 					if (distResis(bouncer_x, bouncer_y)) {
 						al_draw_bitmap(Resis, bouncer_x, bouncer_y - 10, 0);
 						crearCoord(bouncer_x, bouncer_y, ValorResis);
+						al_draw_text(nros, ColorLetra, bouncer_x + 38, bouncer_y - 25, ALLEGRO_ALIGN_CENTER, NroAscii);
 					}
 
 					//Aca dibujo la resistencia
@@ -239,8 +241,10 @@ int main(int argc, char **argv)
 			switch (ev.keyboard.keycode) {
 			case ALLEGRO_KEY_R:
 				EstadoTecla = 1;
+				al_set_window_position(display, 3000, 3000);
 				printf("Ingrese el valor de la resistencia ");
 				ValorResis = ascii2int();
+				al_set_window_position(display, 0, 0);
 				break;
 			case ALLEGRO_KEY_L:
 				EstadoTecla = 2;
@@ -306,7 +310,7 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis) {
 
 	switch (Tecla) {
 	case  1:
-		al_draw_text(notas, ColorNotas, SCREEN_W * 0.03, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "Estado Actual Resistencia");
+		al_draw_text(notas, ColorNotas, SCREEN_W * 0.03, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "Estado Actual Resistencia                Ohms");
 		al_draw_text(nros, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, NroAscii);
 		break;
 	case 2:
