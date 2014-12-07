@@ -31,7 +31,7 @@
 #define ButCalcDer (SCREEN_W * 0.9 + 80)
 #define ButCalcTop  (SCREEN_H * 0.75 + 80)
 #define ButCalcBot  (SCREEN_H * 0.75 - 80)
-#define CantidadRes 10
+#define CantidadRes 5
 #define MargenError 300
 #define MargenDist 3000
 
@@ -44,17 +44,23 @@ typedef struct {
 	int Valor;
 } resistor;
 
-typedef struct{
+typedef struct {
 	float x;
 	float y;
 	int NroRes;
+	bool borne; // 0=der--1=izq
 } coordenadas;
+
+typedef struct {
+	int der;
+	int izq;
+}TERMINAL;
 
 
 //Proto de funciones
 void Fondo(ALLEGRO_FONT *font, ALLEGRO_FONT *notas);
-void crearCoord(float coordInicX, float coordInicY,int ValorResis);
-void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display,int ValorResis);
+void crearCoord(float coordInicX, float coordInicY, int ValorResis);
+void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis);
 coordenadas buscarCoinc(float bouncer_x, float bouncer_y);
 void do_nothing(void);
 bool distResis(float bouncer_x, float bouncer_y);
@@ -71,7 +77,7 @@ bool FirstTime = 0;
 resistor ResisCoord[CantidadRes];
 char NroAscii[10];
 //MATRIZ DE PRUEBA
-int uniones[CantidadRes][CantidadRes];
+TERMINAL nodos[CantidadRes][CantidadRes];
 
 
 int main(int argc, char **argv)
@@ -88,7 +94,7 @@ int main(int argc, char **argv)
 	float bouncer_x = SCREEN_W / 2.0 - BOUNCER_SIZE / 2.0;
 	float bouncer_y = SCREEN_H / 2.0 - BOUNCER_SIZE / 2.0;
 	bool redraw = true;
-	int ValorResis=1;
+	int ValorResis = 1;
 	coordenadas puntoSelec1;
 	coordenadas puntoSelec2;
 
@@ -100,7 +106,7 @@ int main(int argc, char **argv)
 	bouncer = al_create_bitmap(5000, 200);
 	al_init_image_addon();
 	al_set_target_bitmap(bouncer);
-	al_clear_to_color(al_map_rgb(50, 50,50));
+	al_clear_to_color(al_map_rgb(50, 50, 50));
 	al_set_target_bitmap(al_get_backbuffer(display));
 	event_queue = al_create_event_queue();
 	image = al_load_bitmap("Extras/Cursor.png");
@@ -153,7 +159,7 @@ int main(int argc, char **argv)
 			if (Estado == 0)
 				if ((bouncer_x < ButSalirDer && bouncer_x > ButSalirIzq) && (bouncer_y < ButSalirBot && bouncer_y > ButSalirTop)) {
 					al_draw_bitmap(bouncer, ButSalirIzq, ButSalirTop, 0);
-					Fondo(font,notas);
+					Fondo(font, notas);
 					al_hide_mouse_cursor(display);
 					al_draw_bitmap(image, bouncer_x, bouncer_y, 0);
 					al_flip_display();
@@ -164,15 +170,15 @@ int main(int argc, char **argv)
 					al_hide_mouse_cursor(display);
 					al_draw_bitmap(image, bouncer_x, bouncer_y, 0);
 					al_flip_display();
-					}
+				}
 
 				else {
 					Fondo(font, notas);
 					al_show_mouse_cursor(display);
 				}
 
-			if (Estado == 1)
-				al_show_mouse_cursor(display);
+				if (Estado == 1)
+					al_show_mouse_cursor(display);
 
 
 
@@ -196,6 +202,19 @@ int main(int argc, char **argv)
 						break;
 				// Aca meto el boton CALCULAR
 
+				if (bouncer_x < ButCalcDer && bouncer_x > ButCalcIzq)
+					if (bouncer_y < ButCalcTop && bouncer_y > ButCalcBot) {
+						int j, k;
+						for (j = 0; j < CantidadRes; j++) {
+							for (k = 0; k < CantidadRes; k++) {
+								printf("%d ", nodos[j][k].izq);
+								printf("%d \t", nodos[j][k].der);
+							}
+							printf("\n");
+						}
+					}
+						
+
 				if (FirstTime == 0)
 					FirstTime = 1;
 
@@ -212,7 +231,7 @@ int main(int argc, char **argv)
 				else if (EstadoTecla == 2) {
 
 					if (EstadoLinea == 0) {
-						
+
 						puntoSelec1 = buscarCoinc(bouncer_x, bouncer_y);
 						EstadoLinea = 1;
 					}
@@ -223,9 +242,14 @@ int main(int argc, char **argv)
 							do_nothing();
 						else {
 							al_draw_line(puntoSelec1.x, puntoSelec1.y, puntoSelec2.x, puntoSelec2.y, ColorLinea, 3);
-							uniones[puntoSelec1.NroRes][puntoSelec2.NroRes] = 1;
-							uniones[puntoSelec2.NroRes][puntoSelec1.NroRes] = 1;
-
+							if (puntoSelec1.borne == 0)
+								nodos[puntoSelec1.NroRes][puntoSelec2.NroRes].der = 1;
+							else
+								nodos[puntoSelec1.NroRes][puntoSelec2.NroRes].izq = 1;
+							if (puntoSelec2.borne == 0)
+								nodos[puntoSelec2.NroRes][puntoSelec1.NroRes].der = 1;
+							else
+								nodos[puntoSelec2.NroRes][puntoSelec1.NroRes].izq = 1;
 							//Aca dibujo la linea
 						}
 					}
@@ -241,16 +265,14 @@ int main(int argc, char **argv)
 			switch (ev.keyboard.keycode) {
 			case ALLEGRO_KEY_R:
 				EstadoTecla = 1;
-				al_set_window_position(display, 3000, 3000);
 				printf("Ingrese el valor de la resistencia ");
 				ValorResis = ascii2int();
-				al_set_window_position(display, 0, 0);
 				break;
 			case ALLEGRO_KEY_L:
 				EstadoTecla = 2;
 				break;
 			}
-			dibujoActual(EstadoTecla,display,ValorResis);
+			dibujoActual(EstadoTecla, display, ValorResis);
 		}
 
 
@@ -284,14 +306,14 @@ void Fondo(ALLEGRO_FONT *font, ALLEGRO_FONT *notas) {
 		al_draw_text(font, ColorLetra, SCREEN_W / 2, SCREEN_H * 0.1, ALLEGRO_ALIGN_CENTRE, "Ingrese Resistencias");
 		al_draw_text(font, ColorTitulo, SCREEN_W * 0.9, SCREEN_H * 0.75, ALLEGRO_ALIGN_CENTRE, "Calcular");
 		al_draw_text(font, ColorLetra, SCREEN_W * 0.9, SCREEN_H * 0.85, ALLEGRO_ALIGN_CENTRE, "Salir");
-		al_draw_text(notas,ColorTitulo, SCREEN_W * 0.03, SCREEN_H * 0.95, ALLEGRO_ALIGN_LEFT, "Presione R para resistencias y L para conectores");
+		al_draw_text(notas, ColorTitulo, SCREEN_W * 0.03, SCREEN_H * 0.95, ALLEGRO_ALIGN_LEFT, "Presione R para resistencias y L para conectores");
 		break;
 	}
 	al_flip_display();
 	return;
 }
 void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis) {
-	
+
 	al_init_font_addon();
 	al_init_ttf_addon();
 	ALLEGRO_FONT *notas = al_load_ttf_font("Extras/NormalSometimes-Regular.ttf", 20, 0);
@@ -300,17 +322,17 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis) {
 	ALLEGRO_BITMAP *bloqueador = NULL;
 	bloqueador = al_create_bitmap(600, 22);
 	al_set_target_bitmap(bloqueador);
-	al_clear_to_color(al_map_rgb(50,50, 50));
+	al_clear_to_color(al_map_rgb(50, 50, 50));
 	al_set_target_bitmap(al_get_backbuffer(display));
 
 
-	al_draw_bitmap(bloqueador, SCREEN_W * 0.03, SCREEN_H * 0.90,0);
+	al_draw_bitmap(bloqueador, SCREEN_W * 0.03, SCREEN_H * 0.90, 0);
 	al_flip_display();
 
 
 	switch (Tecla) {
 	case  1:
-		al_draw_text(notas, ColorNotas, SCREEN_W * 0.03, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "Estado Actual Resistencia                Ohms");
+		al_draw_text(notas, ColorNotas, SCREEN_W * 0.03, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "Estado Actual Resistencia            ohms");
 		al_draw_text(nros, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, NroAscii);
 		break;
 	case 2:
@@ -319,14 +341,14 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis) {
 	}
 	al_flip_display();
 }
-void crearCoord(float coordInicX, float coordInicY,int ValorResis) {
+void crearCoord(float coordInicX, float coordInicY, int ValorResis) {
 	static int ResisNum;
 	ResisCoord[ResisNum].coordX1 = coordInicX;
 	ResisCoord[ResisNum].coordX2 = coordInicX + 75;
 	ResisCoord[ResisNum].coordY = coordInicY;
 	ResisCoord[ResisNum].Valor = ValorResis;
 	//Veo propiedades de las resis, para debug
-	printf("Resistencia Numero %d, Coord X1 %f, Coord X2 %f, Coord Y1 %f, Valor Resistivo %d \n", ResisNum, ResisCoord[ResisNum].coordX1,ResisCoord[ResisNum].coordX2,ResisCoord[ResisNum].coordY, ResisCoord[ResisNum].Valor);
+	printf("Resistencia Numero %d, Coord X1 %f, Coord X2 %f, Coord Y1 %f, Valor Resistivo %d \n", ResisNum, ResisCoord[ResisNum].coordX1, ResisCoord[ResisNum].coordX2, ResisCoord[ResisNum].coordY, ResisCoord[ResisNum].Valor);
 	ResisNum++;
 }
 coordenadas buscarCoinc(float bouncer_x, float bouncer_y) {
@@ -340,11 +362,13 @@ coordenadas buscarCoinc(float bouncer_x, float bouncer_y) {
 			Devuelvo.x = ResisCoord[i].coordX1;
 			Devuelvo.y = ResisCoord[i].coordY;
 			Devuelvo.NroRes = i;
+			Devuelvo.borne = 1;
 		}
 		else if (((bouncer_x - ResisCoord[i].coordX2)*(bouncer_x - ResisCoord[i].coordX2) + ((bouncer_y - ResisCoord[i].coordY)*(bouncer_y - ResisCoord[i].coordY))) < MargenError) {
 			Devuelvo.x = ResisCoord[i].coordX2;
 			Devuelvo.y = ResisCoord[i].coordY;
 			Devuelvo.NroRes = i;
+			Devuelvo.borne = 0;
 		}
 
 		return Devuelvo;
@@ -359,21 +383,21 @@ bool distResis(float bouncer_x, float bouncer_y) {
 			return 0;
 		}
 	}
-return 1;
+	return 1;
 }
 void do_nothing(void) {
 	return;
 }
 int ascii2int(void)
 {
-	int num=0;
-	int c,i=0;
+	int num = 0;
+	int c, i = 0;
 	while ((c = getchar()) != '\n')
 	{
 		c -= 48;
 		if (c >= 0 && c <= 9) {
 			num = ((num * 10) + c);
-			NroAscii[i] = c+48;
+			NroAscii[i] = c + 48;
 			i++;
 		}
 		else
@@ -383,5 +407,5 @@ int ascii2int(void)
 		}
 	}
 	NroAscii[i] = 0;
-return (num);
+	return (num);
 }
