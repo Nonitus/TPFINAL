@@ -83,6 +83,7 @@ int main(int argc, char **argv)
 	ALLEGRO_BITMAP *Resis = NULL;
 	ALLEGRO_FONT *font = NULL;
 	ALLEGRO_FONT *notas = NULL;
+	ALLEGRO_FONT *nros = NULL;
 	float bouncer_x = SCREEN_W / 2.0 - BOUNCER_SIZE / 2.0;
 	float bouncer_y = SCREEN_H / 2.0 - BOUNCER_SIZE / 2.0;
 	bool redraw = true;
@@ -108,7 +109,7 @@ int main(int argc, char **argv)
 	al_init_ttf_addon();
 	font = al_load_ttf_font("Extras/SouthernAire_Personal_Use_Only.ttf", 90, 0);
 	notas = al_load_ttf_font("Extras/NormalSometimes-Regular.ttf", 20, 0);
-
+	nros = al_load_ttf_font("Extras/Big-Quicksand.ttf", 20, 0);
 
 	//Registro Proveedores de ventos
 
@@ -290,7 +291,7 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis) {
 	al_init_font_addon();
 	al_init_ttf_addon();
 	ALLEGRO_FONT *notas = al_load_ttf_font("Extras/NormalSometimes-Regular.ttf", 20, 0);
-
+	ALLEGRO_FONT *nros = al_load_ttf_font("Extras/Big-Quicksand.ttf", 20, 0);
 
 	ALLEGRO_BITMAP *bloqueador = NULL;
 	bloqueador = al_create_bitmap(600, 22);
@@ -306,7 +307,7 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis) {
 	switch (Tecla) {
 	case  1:
 		al_draw_text(notas, ColorNotas, SCREEN_W * 0.03, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "Estado Actual Resistencia");
-		al_draw_text(notas, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, NroAscii);
+		al_draw_text(nros, ColorNotas, SCREEN_W * 0.2, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, NroAscii);
 		break;
 	case 2:
 		al_draw_text(notas, ColorNotas, SCREEN_W * 0.03, SCREEN_H * 0.90, ALLEGRO_ALIGN_LEFT, "Estado Actual Conductor");
@@ -379,10 +380,4 @@ int ascii2int(void)
 	}
 	NroAscii[i] = 0;
 return (num);
-}
-char* char2int(int numero)
-{
-	char p2char[20];
-	_itoa_s(numero, p2char, 10);
-	return(p2char);
 }
