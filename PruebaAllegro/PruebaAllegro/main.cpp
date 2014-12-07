@@ -6,18 +6,19 @@
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_primitives.h>
 
+//Defines
 #define SCREEN_W  1920
 #define SCREEN_H  1000
 #define ColorLetra al_map_rgb(50, 187, 164)
 #define ColorNotas al_map_rgb(30, 157, 164)
 #define ColorTitulo al_map_rgb(255, 255, 255)
 #define ColorLinea al_map_rgb(0,0,0)
-#define ButRunIzq  ( SCREEN_W / 2 - 100)
-#define ButRunDer  ( SCREEN_W / 2 + 100)
+#define ButRunIzq  (SCREEN_W / 2 - 100)
+#define ButRunDer  (SCREEN_W / 2 + 100)
 #define ButRunTop  (SCREEN_H / 2 - 100 - 10)
 #define ButRunBot  (SCREEN_H / 2 - 100 + 90)
-#define ButSalirIzq  ( SCREEN_W / 2 - 70)
-#define ButSalirDer ( SCREEN_W / 2 + 70)
+#define ButSalirIzq  (SCREEN_W / 2 - 70)
+#define ButSalirDer (SCREEN_W / 2 + 70)
 #define ButSalirTop  (SCREEN_H / 2 + 140 - 40)
 #define ButSalirBot  (SCREEN_H / 2 + 140 + 40)
 #define ButSalir2Izq  (SCREEN_W * 0.9 - 80)
@@ -28,6 +29,11 @@
 #define ButCalcDer (SCREEN_W * 0.9 + 80)
 #define ButCalcTop  (SCREEN_H * 0.75 + 80)
 #define ButCalcBot  (SCREEN_H * 0.75 - 80)
+#define CantidadRes 10
+#define MargenError 300
+#define MargenDist 3000
+
+//Estructuras
 
 typedef struct {
 	float coordX1;
@@ -39,22 +45,28 @@ typedef struct {
 typedef struct{
 	float x;
 	float y;
+	int NroRes;
 } coordenadas;
 
+
+//Proto de funciones
 void Fondo(ALLEGRO_FONT *font, ALLEGRO_FONT *notas);
 void crearCoord(float coordInicX, float coordInicY,int ValorResis);
 void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display,int ValorResis);
 coordenadas buscarCoinc(float bouncer_x, float bouncer_y);
 void do_nothing(void);
+bool distResis(float bouncer_x, float bouncer_y);
 
-
+//Variables globales
 const float FPS = 60;
 const int BOUNCER_SIZE = 32;
 int Estado = 0;
 int EstadoTecla;
 int EstadoLinea;
 bool FirstTime = 0;
-resistor ResisCoord[10];
+resistor ResisCoord[CantidadRes];
+//MATRIZ DE PRUEBA
+int uniones[CantidadRes][CantidadRes];
 
 
 int main(int argc, char **argv)
@@ -65,6 +77,8 @@ int main(int argc, char **argv)
 	ALLEGRO_BITMAP *bouncer = NULL;
 	ALLEGRO_BITMAP *image = NULL;
 	ALLEGRO_BITMAP *Resis = NULL;
+	ALLEGRO_FONT *font = NULL;
+	ALLEGRO_FONT *notas = NULL;
 	float bouncer_x = SCREEN_W / 2.0 - BOUNCER_SIZE / 2.0;
 	float bouncer_y = SCREEN_H / 2.0 - BOUNCER_SIZE / 2.0;
 	bool redraw = true;
@@ -73,71 +87,27 @@ int main(int argc, char **argv)
 	coordenadas puntoSelec2;
 
 	//Todos las partes a usar
-
-	if (!al_init()) {
-		fprintf(stderr, "failed to initialize allegro!\n");
-		return -1;
-	}
-
-	if (!al_install_mouse()) {
-		fprintf(stderr, "failed to initialize the mouse!\n");
-		return -1;
-	}
-
+	al_init();
+	al_install_mouse();
 	timer = al_create_timer(1.0 / FPS);
-	if (!timer) {
-		fprintf(stderr, "failed to create timer!\n");
-		return -1;
-	}
-
 	display = al_create_display(SCREEN_W, SCREEN_H);
-	if (!display) {
-		fprintf(stderr, "failed to create display!\n");
-		al_destroy_timer(timer);
-		return -1;
-	}
-
 	bouncer = al_create_bitmap(5000, 200);
-	if (!bouncer) {
-		fprintf(stderr, "failed to create bouncer bitmap!\n");
-		al_destroy_display(display);
-		al_destroy_timer(timer);
-		return -1;
-	}
-
-	if (!al_init_image_addon()) {
-		al_show_native_message_box(display, "Error", "Error", "Failed to initialize al_init_image_addon!",
-			NULL, ALLEGRO_MESSAGEBOX_ERROR);
-		return 0;
-	}
-
+	al_init_image_addon();
 	al_set_target_bitmap(bouncer);
 	al_clear_to_color(al_map_rgb(50, 50,50));
 	al_set_target_bitmap(al_get_backbuffer(display));
 	event_queue = al_create_event_queue();
 	image = al_load_bitmap("Extras/Cursor.png");
 	Resis = al_load_bitmap("Extras/Resis.png");
-
-	if (!al_install_keyboard()) {
-		fprintf(stderr, "failed to initialize the keyboard!\n");
-		return -1;
-	}
-
-	if (!event_queue) {
-		fprintf(stderr, "failed to create event_queue!\n");
-		al_destroy_bitmap(bouncer);
-		al_destroy_display(display);
-		al_destroy_timer(timer);
-		return -1;
-	}
-
+	al_install_keyboard();
 	al_init_font_addon();
 	al_init_ttf_addon();
-	ALLEGRO_FONT *font = al_load_ttf_font("Extras/SouthernAire_Personal_Use_Only.ttf", 90, 0);
-	ALLEGRO_FONT *notas = al_load_ttf_font("Extras/NormalSometimes-Regular.ttf", 20, 0);
+	font = al_load_ttf_font("Extras/SouthernAire_Personal_Use_Only.ttf", 90, 0);
+	notas = al_load_ttf_font("Extras/NormalSometimes-Regular.ttf", 20, 0);
 
 
 	//Registro Proveedores de ventos
+
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	al_register_event_source(event_queue, al_get_mouse_event_source());
@@ -147,11 +117,10 @@ int main(int argc, char **argv)
 
 
 	//Inicializo Pantalla
+
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 	al_flip_display();
 	al_start_timer(timer);
-	//al_hide_mouse_cursor(display);
-
 	Fondo(font, notas);
 
 
@@ -219,13 +188,18 @@ int main(int argc, char **argv)
 				if (bouncer_x < ButSalir2Der && bouncer_x > ButSalir2Izq)
 					if (bouncer_y < ButSalir2Top && bouncer_y > ButSalir2Bot)
 						break;
+				// Aca meto el boton CALCULAR
 
 				if (FirstTime == 0)
 					FirstTime = 1;
 
 				else if (EstadoTecla == 1) {
-					al_draw_bitmap(Resis, bouncer_x, bouncer_y - 10, 0);
-					crearCoord(bouncer_x,bouncer_y,ValorResis);
+					if (distResis(bouncer_x, bouncer_y)) {
+						al_draw_bitmap(Resis, bouncer_x, bouncer_y - 10, 0);
+						crearCoord(bouncer_x, bouncer_y, ValorResis);
+					}
+
+					//Aca dibujo la resistencia
 				}
 
 				else if (EstadoTecla == 2) {
@@ -239,10 +213,14 @@ int main(int argc, char **argv)
 						puntoSelec2 = buscarCoinc(bouncer_x, bouncer_y);
 						EstadoLinea = 0;
 						if (puntoSelec1.x == 0 || puntoSelec1.y == 0 || puntoSelec2.y == 0 || puntoSelec2.y == 0)
-							do_nothing;
-						else
+							do_nothing();
+						else {
 							al_draw_line(puntoSelec1.x, puntoSelec1.y, puntoSelec2.x, puntoSelec2.y, ColorLinea, 3);
+							uniones[puntoSelec1.NroRes][puntoSelec2.NroRes] = 1;
+							uniones[puntoSelec2.NroRes][puntoSelec1.NroRes] = 1;
 
+							//Aca dibujo la linea
+						}
 					}
 
 
@@ -328,11 +306,8 @@ void Fondo(ALLEGRO_FONT *font, ALLEGRO_FONT *notas) {
 	al_flip_display();
 	return;
 }
-
 void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis) {
-
-
-
+	
 	al_init_font_addon();
 	al_init_ttf_addon();
 	ALLEGRO_FONT *notas = al_load_ttf_font("Extras/NormalSometimes-Regular.ttf", 20, 0);
@@ -388,33 +363,47 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis) {
 	}
 	al_flip_display();
 }
-
 void crearCoord(float coordInicX, float coordInicY,int ValorResis) {
 	static int ResisNum;
 	ResisCoord[ResisNum].coordX1 = coordInicX;
 	ResisCoord[ResisNum].coordX2 = coordInicX + 75;
 	ResisCoord[ResisNum].coordY = coordInicY;
 	ResisCoord[ResisNum].Valor = ValorResis;
+	//Veo propiedades de las resis, para debug
 	printf("Resistencia Numero %d, Coord X1 %f, Coord X2 %f, Coord Y1 %f, Valor Resistivo %d \n", ResisNum, ResisCoord[ResisNum].coordX1,ResisCoord[ResisNum].coordX2,ResisCoord[ResisNum].coordY, ResisCoord[ResisNum].Valor);
 	ResisNum++;
 }
-
 coordenadas buscarCoinc(float bouncer_x, float bouncer_y) {
 	coordenadas Devuelvo;
 	Devuelvo.x = 0;
 	Devuelvo.y = 0;
+	Devuelvo.NroRes = -1;
 	int i;
-	for (i = 0; i <= 10; i++)
-		if (((bouncer_x - ResisCoord[i].coordX1)*(bouncer_x - ResisCoord[i].coordX1) + ((bouncer_y - ResisCoord[i].coordY)*(bouncer_y - ResisCoord[i].coordY))) < 100) {
+	for (i = 0; i <= CantidadRes; i++)
+		if (((bouncer_x - ResisCoord[i].coordX1)*(bouncer_x - ResisCoord[i].coordX1) + ((bouncer_y - ResisCoord[i].coordY)*(bouncer_y - ResisCoord[i].coordY))) < MargenError) {
 			Devuelvo.x = ResisCoord[i].coordX1;
 			Devuelvo.y = ResisCoord[i].coordY;
+			Devuelvo.NroRes = i;
 		}
-		else if (((bouncer_x - ResisCoord[i].coordX2)*(bouncer_x - ResisCoord[i].coordX2) + ((bouncer_y - ResisCoord[i].coordY)*(bouncer_y - ResisCoord[i].coordY))) < 100) {
+		else if (((bouncer_x - ResisCoord[i].coordX2)*(bouncer_x - ResisCoord[i].coordX2) + ((bouncer_y - ResisCoord[i].coordY)*(bouncer_y - ResisCoord[i].coordY))) < MargenError) {
 			Devuelvo.x = ResisCoord[i].coordX2;
 			Devuelvo.y = ResisCoord[i].coordY;
+			Devuelvo.NroRes = i;
 		}
 
 		return Devuelvo;
+}
+bool distResis(float bouncer_x, float bouncer_y) {
+	int i;
+	for (i = 0; i <= CantidadRes; i++) {
+		if (((bouncer_x - ResisCoord[i].coordX1)*(bouncer_x - ResisCoord[i].coordX1) + ((bouncer_y - ResisCoord[i].coordY)*(bouncer_y - ResisCoord[i].coordY))) < MargenDist) {
+			return 0;
+		}
+		else if (((bouncer_x - ResisCoord[i].coordX2)*(bouncer_x - ResisCoord[i].coordX2) + ((bouncer_y - ResisCoord[i].coordY)*(bouncer_y - ResisCoord[i].coordY))) < MargenDist) {
+			return 0;
+		}
+	}
+return 1;
 }
 void do_nothing(void) {
 	return;
