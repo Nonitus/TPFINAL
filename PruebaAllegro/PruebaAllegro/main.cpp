@@ -97,6 +97,7 @@ int main(int argc, char **argv)
 	int ValorResis = 1;
 	coordenadas puntoSelec1;
 	coordenadas puntoSelec2;
+	int v = 10;
 
 	//Todos las partes a usar
 	al_init();
@@ -204,7 +205,122 @@ int main(int argc, char **argv)
 
 				if (bouncer_x < ButCalcDer && bouncer_x > ButCalcIzq)
 					if (bouncer_y < ButCalcTop && bouncer_y > ButCalcBot) {
-						int j, k;
+						int j, k,l;
+
+						//IMPRIMO
+
+						for (j = 0; j < CantidadRes; j++) {
+							for (k = 0; k < CantidadRes; k++) {
+								printf("%d ", nodos[j][k].izq);
+								printf("%d \t", nodos[j][k].der);
+							}
+							printf("\n");
+						}
+						printf("\n");
+
+						//Muestro todas las conexiones
+
+
+
+							for (j = 0; j <= CantidadRes; j++) {
+								for (k = 0; k < CantidadRes; k++) {
+									if (nodos[j][k].izq == 1) {	//miro si hay un uno a la izq de cada casilla
+										if (nodos[k][j].izq == 1) { // miro si estoy conectado a la pata izq de algo
+											for (l = 0; l < CantidadRes; l++) {//Busco conexiones de r2 por mismo borne que r1
+												if (nodos[k][l].izq == 1) {
+													if (l != j) {
+														nodos[j][l].izq = 1;
+													}
+												}
+											}
+
+										}
+										else {
+											for (l = 0; l < CantidadRes; l++) {
+												if (nodos[k][l].der == 1) {
+													if (j != l) {
+														nodos[j][l].izq = 1;
+													}
+												}
+											}
+										}
+									}
+
+									else if (nodos[j][k].der == 1) {// Si no hay un uno a la izq, lo busco a la derecha
+										if (nodos[k][j].izq == 1) {
+											for (l = 0; l < CantidadRes; l++) {
+												if (nodos[k][l].izq == 1) {
+													if (l != j) {
+														nodos[j][l].der = 1;
+													}
+												}
+											}
+										}
+										else {
+											for (l = 0; l < CantidadRes; l++) {
+												if (nodos[k][l].der == 1) {
+													if (j != l) {
+														nodos[j][l].der = 1;
+													}
+												}
+											}
+										}
+
+									}
+								}
+							}
+
+							for (j = CantidadRes; j >= 0; j--) {
+								for (k = CantidadRes; k > 0; k--) {
+									if (nodos[j][k].izq == 1) {	//miro si hay un uno a la izq de cada casilla
+										if (nodos[k][j].izq == 1) { // miro si estoy conectado a la pata izq de algo
+											for (l = 0; l < CantidadRes; l++) {//Busco conexiones de r2 por mismo borne que r1
+												if (nodos[k][l].izq == 1) {
+													if (l != j) {
+														nodos[j][l].izq = 1;
+													}
+												}
+											}
+
+										}
+										else {
+											for (l = 0; l < CantidadRes; l++) {
+												if (nodos[k][l].der == 1) {
+													if (j != l) {
+														nodos[j][l].izq = 1;
+													}
+												}
+											}
+										}
+									}
+
+									else if (nodos[j][k].der == 1) {// Si no hay un uno a la izq, lo busco a la derecha
+										if (nodos[k][j].izq == 1) {
+											for (l = 0; l < CantidadRes; l++) {
+												if (nodos[k][l].izq == 1) {
+													if (l != j) {
+														nodos[j][l].der = 1;
+													}
+												}
+											}
+										}
+										else {
+											for (l = 0; l < CantidadRes; l++) {
+												if (nodos[k][l].der == 1) {
+													if (j != l) {
+														nodos[j][l].der = 1;
+													}
+												}
+											}
+										}
+
+									}
+								}
+							}
+
+
+						//IMPRIMO 
+
 						for (j = 0; j < CantidadRes; j++) {
 							for (k = 0; k < CantidadRes; k++) {
 								printf("%d ", nodos[j][k].izq);
@@ -213,7 +329,6 @@ int main(int argc, char **argv)
 							printf("\n");
 						}
 					}
-						
 
 				if (FirstTime == 0)
 					FirstTime = 1;
@@ -223,6 +338,7 @@ int main(int argc, char **argv)
 						al_draw_bitmap(Resis, bouncer_x, bouncer_y - 10, 0);
 						crearCoord(bouncer_x, bouncer_y, ValorResis);
 						al_draw_text(nros, ColorLetra, bouncer_x + 38, bouncer_y - 25, ALLEGRO_ALIGN_CENTER, NroAscii);
+
 					}
 
 					//Aca dibujo la resistencia
@@ -266,7 +382,8 @@ int main(int argc, char **argv)
 			case ALLEGRO_KEY_R:
 				EstadoTecla = 1;
 				printf("Ingrese el valor de la resistencia ");
-				ValorResis = ascii2int();
+				//ValorResis = ascii2int();
+				ValorResis = 1;
 				break;
 			case ALLEGRO_KEY_L:
 				EstadoTecla = 2;
