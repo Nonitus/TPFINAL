@@ -31,7 +31,7 @@
 #define ButCalcDer (SCREEN_W * 0.9 + 80)
 #define ButCalcTop  (SCREEN_H * 0.75 + 80)
 #define ButCalcBot  (SCREEN_H * 0.75 - 80)
-#define CantidadRes 5
+#define CantidadRes 50
 #define MargenError 300
 #define MargenDist 3000
 
@@ -98,6 +98,7 @@ int main(int argc, char **argv)
 	coordenadas puntoSelec1;
 	coordenadas puntoSelec2;
 	int v = 10;
+	float aproxx, aproxy;
 
 	//Todos las partes a usar
 	al_init();
@@ -221,102 +222,105 @@ int main(int argc, char **argv)
 						//Muestro todas las conexiones
 
 
-
-							for (j = 0; j <= CantidadRes; j++) {
-								for (k = 0; k < CantidadRes; k++) {
-									if (nodos[j][k].izq == 1) {	//miro si hay un uno a la izq de cada casilla
-										if (nodos[k][j].izq == 1) { // miro si estoy conectado a la pata izq de algo
-											for (l = 0; l < CantidadRes; l++) {//Busco conexiones de r2 por mismo borne que r1
-												if (nodos[k][l].izq == 1) {
-													if (l != j) {
-														nodos[j][l].izq = 1;
-													}
-												}
-											}
-
-										}
-										else {
-											for (l = 0; l < CantidadRes; l++) {
-												if (nodos[k][l].der == 1) {
-													if (j != l) {
-														nodos[j][l].izq = 1;
-													}
-												}
-											}
-										}
-									}
-
-									else if (nodos[j][k].der == 1) {// Si no hay un uno a la izq, lo busco a la derecha
-										if (nodos[k][j].izq == 1) {
-											for (l = 0; l < CantidadRes; l++) {
-												if (nodos[k][l].izq == 1) {
-													if (l != j) {
-														nodos[j][l].der = 1;
-													}
-												}
-											}
-										}
-										else {
-											for (l = 0; l < CantidadRes; l++) {
-												if (nodos[k][l].der == 1) {
-													if (j != l) {
-														nodos[j][l].der = 1;
-													}
+						for (j = 0; j <= CantidadRes; j++) {
+							for (k = 0; k < CantidadRes; k++) {
+								if (nodos[j][k].izq == 1) {	//miro si hay un uno a la izq de cada casilla
+									if (nodos[k][j].izq == 1) { // miro si estoy conectado a la pata izq de algo
+										for (l = 0; l < CantidadRes; l++) {//Busco conexiones de r2 por mismo borne que r1
+											if (nodos[k][l].izq == 1) {
+												if (l != j) {
+													nodos[j][l].izq = 1;
 												}
 											}
 										}
 
 									}
-								}
-							}
-
-							for (j = CantidadRes; j >= 0; j--) {
-								for (k = CantidadRes; k > 0; k--) {
-									if (nodos[j][k].izq == 1) {	//miro si hay un uno a la izq de cada casilla
-										if (nodos[k][j].izq == 1) { // miro si estoy conectado a la pata izq de algo
-											for (l = 0; l < CantidadRes; l++) {//Busco conexiones de r2 por mismo borne que r1
-												if (nodos[k][l].izq == 1) {
-													if (l != j) {
-														nodos[j][l].izq = 1;
-													}
-												}
-											}
-
-										}
-										else {
-											for (l = 0; l < CantidadRes; l++) {
-												if (nodos[k][l].der == 1) {
-													if (j != l) {
-														nodos[j][l].izq = 1;
-													}
+									else {
+										for (l = 0; l < CantidadRes; l++) {
+											if (nodos[k][l].der == 1) {
+												if (j != l) {
+													nodos[j][l].izq = 1;
 												}
 											}
 										}
-									}
-
-									else if (nodos[j][k].der == 1) {// Si no hay un uno a la izq, lo busco a la derecha
-										if (nodos[k][j].izq == 1) {
-											for (l = 0; l < CantidadRes; l++) {
-												if (nodos[k][l].izq == 1) {
-													if (l != j) {
-														nodos[j][l].der = 1;
-													}
-												}
-											}
-										}
-										else {
-											for (l = 0; l < CantidadRes; l++) {
-												if (nodos[k][l].der == 1) {
-													if (j != l) {
-														nodos[j][l].der = 1;
-													}
-												}
-											}
-										}
-
 									}
 								}
+
+								if (nodos[j][k].der == 1) {// Si no hay un uno a la izq, lo busco a la derecha
+									if (nodos[k][j].izq == 1) {
+										for (l = 0; l < CantidadRes; l++) {
+											if (nodos[k][l].izq == 1) {
+												if (l != j) {
+													nodos[j][l].der = 1;
+												}
+											}
+										}
+									}
+									else {
+										for (l = 0; l < CantidadRes; l++) {
+											if (nodos[k][l].der == 1) {
+												if (j != l) {
+													nodos[j][l].der = 1;
+												}
+											}
+										}
+									}
+
+								}
 							}
+						}
+
+						for (j = CantidadRes; j >= 0; j--) {
+							for (k = CantidadRes; k > 0; k--) {
+								if (nodos[j][k].izq == 1) {	//miro si hay un uno a la izq de cada casilla
+									if (nodos[k][j].izq == 1) { // miro si estoy conectado a la pata izq de algo
+										for (l = 0; l < CantidadRes; l++) {//Busco conexiones de r2 por mismo borne que r1
+											if (nodos[k][l].izq == 1) {
+												if (l != j) {
+													nodos[j][l].izq = 1;
+												}
+											}
+										}
+
+									}
+									else {
+										for (l = 0; l < CantidadRes; l++) {
+											if (nodos[k][l].der == 1) {
+												if (j != l) {
+													nodos[j][l].izq = 1;
+												}
+											}
+										}
+									}
+								}
+
+								else if (nodos[j][k].der == 1) {// Si no hay un uno a la izq, lo busco a la derecha
+									if (nodos[k][j].izq == 1) {
+										for (l = 0; l < CantidadRes; l++) {
+											if (nodos[k][l].izq == 1) {
+												if (l != j) {
+													nodos[j][l].der = 1;
+												}
+											}
+										}
+									}
+									else {
+										for (l = 0; l < CantidadRes; l++) {
+											if (nodos[k][l].der == 1) {
+												if (j != l) {
+													nodos[j][l].der = 1;
+												}
+											}
+										}
+									}
+
+								}
+							}
+						}
+
+
+		
+
 
 
 						//IMPRIMO 
@@ -335,7 +339,15 @@ int main(int argc, char **argv)
 
 				else if (EstadoTecla == 1) {
 					if (distResis(bouncer_x, bouncer_y)) {
-						al_draw_bitmap(Resis, bouncer_x, bouncer_y - 10, 0);
+						for (aproxx = 0; aproxx <= 1920; aproxx += 80) {
+							if (((bouncer_x - aproxx) < 40) && ((bouncer_x - aproxx) > -40))
+								bouncer_x = aproxx;
+						}
+						for (aproxy = 0; aproxy <= 1080; aproxy += 80) {
+							if (((bouncer_y - aproxy) < 40) && ((bouncer_y - aproxy) > -40))
+								bouncer_y = aproxy;
+						}
+						al_draw_bitmap(Resis, bouncer_x+2, bouncer_y - 11, 0);
 						crearCoord(bouncer_x, bouncer_y, ValorResis);
 						al_draw_text(nros, ColorLetra, bouncer_x + 38, bouncer_y - 25, ALLEGRO_ALIGN_CENTER, NroAscii);
 
@@ -382,8 +394,9 @@ int main(int argc, char **argv)
 			case ALLEGRO_KEY_R:
 				EstadoTecla = 1;
 				printf("Ingrese el valor de la resistencia ");
+				//DEBUG
 				//ValorResis = ascii2int();
-				ValorResis = 1;
+				ValorResis++;
 				break;
 			case ALLEGRO_KEY_L:
 				EstadoTecla = 2;
@@ -411,7 +424,6 @@ int main(int argc, char **argv)
 }
 
 void Fondo(ALLEGRO_FONT *font, ALLEGRO_FONT *notas) {
-
 	al_clear_to_color(al_map_rgb(50, 50, 50)); //COLOR DE FONDO DE TODO
 	switch (Estado) {
 	case  0:
@@ -423,9 +435,22 @@ void Fondo(ALLEGRO_FONT *font, ALLEGRO_FONT *notas) {
 		al_draw_text(font, ColorLetra, SCREEN_W / 2, SCREEN_H * 0.1, ALLEGRO_ALIGN_CENTRE, "Ingrese Resistencias");
 		al_draw_text(font, ColorTitulo, SCREEN_W * 0.9, SCREEN_H * 0.75, ALLEGRO_ALIGN_CENTRE, "Calcular");
 		al_draw_text(font, ColorLetra, SCREEN_W * 0.9, SCREEN_H * 0.85, ALLEGRO_ALIGN_CENTRE, "Salir");
+		al_draw_text(font, ColorLetra, SCREEN_W * 0.2, SCREEN_H * 0.5, ALLEGRO_ALIGN_CENTRE, "Inicio");
+		al_draw_text(font, ColorLetra, SCREEN_W * 0.8, SCREEN_H * 0.5, ALLEGRO_ALIGN_CENTRE, "Fin");
+		al_draw_line(480, 560, 560, 560, al_map_rgb(0, 0, 0),3);
+		al_draw_line(1360, 560, 1440, 560, al_map_rgb(0, 0, 0), 3);
+		float ptox, ptoy;
+		for (ptox = 0; ptox <= 1920; ptox += 80) {
+			for (ptoy = 0; ptoy <= 1080; ptoy += 80) {
+				al_draw_pixel(ptox, ptoy, ColorLetra);
+			}
+		}
+		al_draw_filled_circle(560, 560, 4, al_map_rgb(0, 0, 0));
+		al_draw_filled_circle(1360, 560, 4, al_map_rgb(0, 0, 0));
 		al_draw_text(notas, ColorTitulo, SCREEN_W * 0.03, SCREEN_H * 0.95, ALLEGRO_ALIGN_LEFT, "Presione R para resistencias y L para conectores");
 		break;
 	}
+
 	al_flip_display();
 	return;
 }
