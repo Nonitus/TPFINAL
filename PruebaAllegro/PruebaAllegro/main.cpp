@@ -8,6 +8,7 @@
 #include <allegro5/allegro_primitives.h>
 
 //Defines
+
 #define SCREEN_W  1920
 #define SCREEN_H  1000
 #define ColorLetra al_map_rgb(50, 187, 164)
@@ -441,9 +442,9 @@ void Fondo(ALLEGRO_FONT *font, ALLEGRO_FONT *notas) {
 		al_draw_line(1360, 560, 1440, 560, al_map_rgb(0, 0, 0), 3);
 		float ptox, ptoy;
 		for (ptox = 0; ptox <= 1920; ptox += 80) {
-			for (ptoy = 0; ptoy <= 1080; ptoy += 80) {
+			for (ptoy = 0; ptoy <= 1080; ptoy += 80) 
 				al_draw_pixel(ptox, ptoy, ColorLetra);
-			}
+			
 		}
 		al_draw_filled_circle(560, 560, 4, al_map_rgb(0, 0, 0));
 		al_draw_filled_circle(1360, 560, 4, al_map_rgb(0, 0, 0));
@@ -484,6 +485,8 @@ void dibujoActual(int Tecla, ALLEGRO_DISPLAY *display, int ValorResis) {
 	al_flip_display();
 }
 void crearCoord(float coordInicX, float coordInicY, int ValorResis) {
+	int contx, conty;
+	int pto = 0;
 	static int ResisNum;
 	ResisCoord[ResisNum].coordX1 = coordInicX;
 	ResisCoord[ResisNum].coordX2 = coordInicX + 75;
@@ -491,6 +494,11 @@ void crearCoord(float coordInicX, float coordInicY, int ValorResis) {
 	ResisCoord[ResisNum].Valor = ValorResis;
 	//Veo propiedades de las resis, para debug
 	printf("Resistencia Numero %d, Coord X1 %f, Coord X2 %f, Coord Y1 %f, Valor Resistivo %d \n", ResisNum, ResisCoord[ResisNum].coordX1, ResisCoord[ResisNum].coordX2, ResisCoord[ResisNum].coordY, ResisCoord[ResisNum].Valor);
+	for (contx = 0; contx < 1920; contx++)
+		for (conty = 0; conty < 1080; conty++)
+			if (((coordInicX - contx * 80) == 0) && ((coordInicY - conty * 80) == 0))
+				pto = 10*conty + contx;
+	printf("Resistencia conectada al pto %d \n",pto);
 	ResisNum++;
 }
 coordenadas buscarCoinc(float bouncer_x, float bouncer_y) {
